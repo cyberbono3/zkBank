@@ -82,7 +82,6 @@ func uploadProof(proof string) {
 		return
 	}
 
-	fmt.Printf("jsonData: %s")
 
 	req, err := http.NewRequest("GET", url, bytes.NewBuffer(jsonData))
 	if err != nil {
