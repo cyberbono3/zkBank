@@ -15,7 +15,7 @@ import (
 	"github.com/consensys/gnark/constraint/solver"
 	"github.com/consensys/gnark/frontend"
 	"github.com/consensys/gnark/frontend/cs/r1cs"
-	"github.com/stretchr/testify/assert"
+	//"github.com/stretchr/testify/assert"
 )
 
 func TestProveAndVerify(t *testing.T) {
@@ -25,17 +25,28 @@ func TestProveAndVerify(t *testing.T) {
 		// fixed
 		BobBalance: bobBalance,
 		// given by the user
-		NewBobBalance: 500,
+		NewBobBalance: 100000,
 		// given by the user
 		NewAliceBalance: 0,
 		// private
-		Transfer: 500,
+		Transfer: 100000,
 	}
+
+	// // compile the circuit
+	// ccs, err := frontend.Compile(ecc.BN254.ScalarField(), r1cs.NewBuilder, &Circuit{})
+	// if err != nil {
+	// 	t.Fatalf("failed to compile circuit: %v", err)
+	// }
 
 	witness, err := frontend.NewWitness(&circuit, ecc.BN254.ScalarField())
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	// pk, _, err := groth16.Setup(ccs)
+	// if err != nil {
+	// 	t.Fatalf("failed to setup circuit: %v", err)
+	// }
 
 	oR1cs, err := frontend.Compile(ecc.BN254.ScalarField(), r1cs.NewBuilder, &circuit)
 	if err != nil {
@@ -57,21 +68,21 @@ func TestProveAndVerify(t *testing.T) {
 		t.Fatal(err)
 	}
 	proofHex := hex.EncodeToString(buf.Bytes())
-	err = VerifyProof("500", proofHex)
+	err = VerifyProof("100000", proofHex)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	uploadProof(proofHex)
-	assert.Equal(t, 1,2)
+	//uploadProof(proofHex, "100000")
+	//assert.Equal(t, 1,2)
 }
 
-func uploadProof(proof string) {
+func uploadProof(proof, new_bob_balance string) {
 	url := "http://147.182.233.80:8080/"
 	
 	// Create a map with the data to be sent in JSON format
 	data := map[string]string{
-		"new_bob_balance": "1000000",
+		"new_bob_balance": new_bob_balance,
 		"proof_hex":       proof,
 	}
 
