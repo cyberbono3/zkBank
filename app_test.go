@@ -68,6 +68,7 @@ func TestProveAndVerify(t *testing.T) {
 		t.Fatal(err)
 	}
 	proofHex := hex.EncodeToString(buf.Bytes())
+	fmt.Printf("proofHex: %v\n", proofHex)
 	err = VerifyProof("100000", proofHex)
 	if err != nil {
 		t.Fatal(err)
