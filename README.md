@@ -1,7 +1,5 @@
 # zkBank
 
-> [!WARNING]
-> Please do not publish a write up or solution to this challenge, as we actively use it for recruiting :) thanks!
 
 Alice is a sneaky one, she's been trying to send more than what she has to Bob's account. Good thing that we use zero-knowledge proof to enforce the integrity of our transfer. We just want to make sure that Bob can get 100,000 worth of coins or more. Can you help us verify Alice's proof?
 
