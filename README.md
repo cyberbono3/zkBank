@@ -6,7 +6,7 @@ Alice is a sneaky one, she's been trying to send more than what she has to Bob's
 ![zkbank](https://i.imgur.com/N6zakZ8.png)
 
 > [!NOTE]
-> This is a challenge published as part of [zkSecurity's recruiting effort](https://www.zksecurity.xyz/blog/posts/zkbank/). Note also that this is a real bug that was found during an audit, so you're not just solving a silly puzzle here :D
+ Note also that this is a real bug that was found during an audit, so you're not just solving a silly puzzle here :D
 
 ## Setup
 
