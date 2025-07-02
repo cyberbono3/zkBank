@@ -3,6 +3,7 @@ package zksec_gkr
 import (
 	"hash"
 	"math/big"
+	"fmt"
 
 	"github.com/consensys/gnark-crypto/ecc/bn254/fr"
 	hashMimc "github.com/consensys/gnark-crypto/hash"
@@ -44,6 +45,7 @@ func (m *BalanceGKR) VerifyGKR(challenges ...frontend.Variable) error {
 		panic("are you even using the app bro?")
 	}
 
+	// TODO check it
 	for i := m.counter; i < len(m.X); i++ {
 		m.X[i] = 0
 		m.Y[i] = 0
@@ -81,6 +83,7 @@ func (m *BalanceGKR) VerifyGKR(challenges ...frontend.Variable) error {
 }
 
 func (m *BalanceGKR) AddCircuit(il, ir frontend.Variable) frontend.Variable {
+	fmt.Printf("AddCircuit, m.counter: %d\n", m.counter)
 	m.X[m.counter] = il
 	m.Y[m.counter] = ir
 
@@ -91,6 +94,8 @@ func (m *BalanceGKR) AddCircuit(il, ir frontend.Variable) frontend.Variable {
 	m.Z[m.counter] = results[0]
 
 	m.counter++
+
+	
 
 	return results[0]
 }
