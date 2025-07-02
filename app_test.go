@@ -21,11 +21,11 @@ func TestProveAndVerify(t *testing.T) {
 		// fixed
 		BobBalance: bobBalance,
 		// given by the user
-		NewBobBalance: 500,
+		NewBobBalance: 1000000,
 		// given by the user
 		NewAliceBalance: 0,
 		// private
-		Transfer: 500,
+		Transfer: 1000000,
 	}
 
 	witness, err := frontend.NewWitness(&circuit, ecc.BN254.ScalarField())

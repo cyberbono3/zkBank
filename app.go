@@ -17,7 +17,7 @@ import (
 //
 
 const (
-	aliceBalance = 500
+	aliceBalance = 1000000
 	bobBalance   = 0
 )
 
