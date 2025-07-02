@@ -39,28 +39,29 @@ func NewBalanceGKR(api frontend.API, bN int) *BalanceGKR {
 	}
 }
 
-func (m *BalanceGKR) VerifyGKR(challenges ...frontend.Variable) error {
-	if m.counter == 0 {
-		panic("are you even using the app bro?")
-	}
+func (m *BalanceGKR) VerifyGKR(insLeft, insRight []frontend.Variable, challenges ...frontend.Variable) error {
+	// if m.counter == 0 {
+	// 	panic("are you even using the app bro?")
+	// }
 
-	for i := m.counter; i < len(m.X); i++ {
-		m.X[i] = 0
-		m.Y[i] = 0
-		m.Z[i] = 0
-	}
+	// for i := m.counter; i < len(m.X); i++ {
+	// 	m.X[i] = 0
+	// 	m.Y[i] = 0
+	// 	m.Z[i] = 0
+	// }
 
 	_gkr := gkr.NewApi()
-	x, err := _gkr.Import(m.X)
+	x, err := _gkr.Import(insLeft)
 	if err != nil {
 		return err
 	}
-	y, err := _gkr.Import(m.Y)
+	y, err := _gkr.Import(insRight)
 	if err != nil {
 		return err
 	}
 
 	z := _gkr.Add(x, y)
+	//z := _gkr.Sub(x, y)
 
 	solution, err := _gkr.Solve(m.api)
 	if err != nil {

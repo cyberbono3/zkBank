@@ -17,7 +17,7 @@ import (
 //
 
 const (
-	aliceBalance = 500
+	aliceBalance = 1000000
 	bobBalance   = 0
 )
 
@@ -78,7 +78,13 @@ func (circuit *Circuit) Define(api frontend.API) error {
 	api.AssertIsEqual(newBobBalance, circuit.NewBobBalance)
 
 	// GKR verifier
-	err := gkrBalance.VerifyGKR(circuit.AliceBalance, circuit.BobBalance)
+	// TODO ensure circuit.NewAliceBalance, circuit.NewBobBalance or circuit.AliceBalance, circuit.BobBalance
+	insLeft := make([]frontend.Variable, 1);
+	insLeft[0] = circuit.AliceBalance
+
+	insRight := make([]frontend.Variable, 1);
+	insRight[0] = circuit.BobBalance
+	err := gkrBalance.VerifyGKR(insLeft, insRight, circuit.AliceBalance, circuit.BobBalance)
 	if err != nil {
 		panic(err)
 	}
@@ -130,16 +136,16 @@ func VerifyProof(newBobBalanceStr string, proofHex string) error {
 	}
 	witness, err := frontend.NewWitness(&circuit, ecc.BN254.ScalarField())
 	if err != nil {
-		return err
+		return fmt.Errorf("NewWitness error: %v", err)
 	}
 	publicWitness, err := witness.Public()
 	if err != nil {
-		return err
+		return fmt.Errorf("public witness error: %v", err)
 	}
 
 	err = groth16.Verify(proof, vk, publicWitness)
 	if err != nil {
-		return err
+		return fmt.Errorf("Groth16 Verify error: %v", err)
 	}
 
 	return nil
