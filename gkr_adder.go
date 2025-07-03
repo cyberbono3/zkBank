@@ -29,11 +29,11 @@ type BalanceGKR struct {
 	api frontend.API
 }
 
-func NewBalanceGKR(api frontend.API, bN int) *BalanceGKR {
+func NewBalanceGKR(api frontend.API) *BalanceGKR {
 	return &BalanceGKR{
-		X: make([]frontend.Variable, 1<<bN),
-		Y: make([]frontend.Variable, 1<<bN),
-		Z: make([]frontend.Variable, 1<<bN),
+		X: make([]frontend.Variable, 2),
+		Y: make([]frontend.Variable, 2),
+		Z: make([]frontend.Variable, 2),
 
 		counter: 0,
 		api:     api,
@@ -45,12 +45,20 @@ func (m *BalanceGKR) VerifyGKR(challenges ...frontend.Variable) error {
 		panic("are you even using the app bro?")
 	}
 
-	// TODO check it
+	//TODO check it
+	m.api.Println("before m.X:", m.X[0])
+	m.api.Println("before m.Y\n: %w", m.X[1])
+	m.api.Println("before m.Z\n: %w", m.X)
 	for i := m.counter; i < len(m.X); i++ {
+		fmt.Println("for loop is not started")
 		m.X[i] = 0
 		m.Y[i] = 0
 		m.Z[i] = 0
 	}
+
+	m.api.Println("after m.X\n: %w", m.X)
+	m.api.Println("after m.Y\n: %w", m.X)
+	m.api.Println("after m.Z\n: %w", m.X)
 
 	_gkr := gkr.NewApi()
 	x, err := _gkr.Import(m.X)
@@ -70,7 +78,8 @@ func (m *BalanceGKR) VerifyGKR(challenges ...frontend.Variable) error {
 	}
 
 	Z_gkr := solution.Export(z)
-	err = solution.Verify("mimc", challenges...)
+	err = solution.Verify("mimc", Z_gkr...)
+	//err = solution.Verify("mimc")
 	if err != nil {
 		return err
 	}
@@ -95,7 +104,23 @@ func (m *BalanceGKR) AddCircuit(il, ir frontend.Variable) frontend.Variable {
 
 	m.counter++
 
-	
+
+	return results[0]
+}
+
+func (m *BalanceGKR) SubCircuit(il, ir frontend.Variable) frontend.Variable {
+	fmt.Printf("SubCircuit, m.counter: %d\n", m.counter)
+	m.X[m.counter] = il
+	m.Y[m.counter] = ir
+
+	results, err := m.api.Compiler().NewHint(SubHint, 1, il, ir)
+	if err != nil {
+		panic("failed to run hint, err: " + err.Error())
+	}
+	m.Z[m.counter] = results[0]
+
+	m.counter++
+
 
 	return results[0]
 }
@@ -106,6 +131,19 @@ func TransferHint(q *big.Int, inputs []*big.Int, results []*big.Int) error {
 
 	var res fr.Element
 	res.Add(rhs, lhs)
+
+	bytes := res.Bytes()
+	results[0].SetBytes(bytes[:])
+
+	return nil
+}
+
+func SubHint(q *big.Int, inputs []*big.Int, results []*big.Int) error {
+	lhs := new(fr.Element).SetBigInt(inputs[0])
+	rhs := new(fr.Element).SetBigInt(inputs[1])
+
+	var res fr.Element
+	res.Sub(rhs, lhs)
 
 	bytes := res.Bytes()
 	results[0].SetBytes(bytes[:])

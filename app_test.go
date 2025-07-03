@@ -42,16 +42,13 @@ func TestProveAndVerify(t *testing.T) {
 		fmt.Println("error occured ", err)
 	}
 
-	// create a proof
-	// TODO try without hint
+
 	proof, err := groth16.Prove(
-		oR1cs, pk, witness, backend.WithSolverOptions(solver.WithHints(TransferHint)),
-	)
+		oR1cs, pk, witness, backend.WithSolverOptions(solver.WithHints(TransferHint)))
+	
 	if err != nil {
 		t.Fatal(err)
 	}
-
-
 
 	// serialize proof verify
 	var buf bytes.Buffer

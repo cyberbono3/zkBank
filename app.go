@@ -63,13 +63,15 @@ type Circuit struct {
 
 func (circuit *Circuit) Define(api frontend.API) error {
 	// init
-	gkrBalance := NewBalanceGKR(api, 1)
+	gkrBalance := NewBalanceGKR(api)
 
 	// transfer is legit?
 	api.AssertIsLessOrEqual(circuit.Transfer, circuit.AliceBalance)
 
-	// new balance for Alice
+	// new balance for Alic// TODO fix negated
 	negated := api.Neg(circuit.Transfer)
+	//api.Println("negated: %w\n", negated)
+	//newAliceBalance := gkrBalance.SubCircuit(circuit.AliceBalance, circuit.Transfer)
 	newAliceBalance := gkrBalance.AddCircuit(circuit.AliceBalance, negated)
 	api.AssertIsEqual(newAliceBalance, circuit.NewAliceBalance)
 
@@ -78,6 +80,7 @@ func (circuit *Circuit) Define(api frontend.API) error {
 	api.AssertIsEqual(newBobBalance, circuit.NewBobBalance)
 
 	// GKR verifier
+	fmt.Printf("gkrBalance.counter before VerifyGKR: %d", gkrBalance.counter)
 	err := gkrBalance.VerifyGKR(circuit.AliceBalance, circuit.BobBalance)
 	if err != nil {
 		panic(err)
@@ -126,7 +129,7 @@ func VerifyProof(newBobBalanceStr string, proofHex string) error {
 		NewBobBalance: newBobBalance,
 		// not part of public input, ignore
 		NewAliceBalance: 0,
-		Transfer:        0,
+		Transfer:        1000000,
 	}
 	witness, err := frontend.NewWitness(&circuit, ecc.BN254.ScalarField())
 	if err != nil {
@@ -139,7 +142,7 @@ func VerifyProof(newBobBalanceStr string, proofHex string) error {
 
 	err = groth16.Verify(proof, vk, publicWitness)
 	if err != nil {
-		return err
+		return  fmt.Errorf("groth16.Verify: %w", err)
 	}
 
 	return nil
