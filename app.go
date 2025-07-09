@@ -17,7 +17,7 @@ import (
 //
 
 const (
-	aliceBalance = 500
+	aliceBalance = 100000
 	bobBalance   = 0
 )
 
@@ -35,7 +35,7 @@ func init() {
 	vk = groth16.NewVerifyingKey(ecc.BN254)
 	vk.ReadFrom(bytes.NewReader(vkBytes))
 
-	// deserialize pk from disk
+	//deserialize pk from disk
 	pkBytes, err := os.ReadFile("./pk.bin")
 	if err != nil {
 		panic(err)
@@ -62,6 +62,7 @@ type Circuit struct {
 }
 
 func (circuit *Circuit) Define(api frontend.API) error {
+	fmt.Println("Define")
 	// init
 	gkrBalance := NewBalanceGKR(api, 1)
 
@@ -139,7 +140,7 @@ func VerifyProof(newBobBalanceStr string, proofHex string) error {
 
 	err = groth16.Verify(proof, vk, publicWitness)
 	if err != nil {
-		return err
+		return fmt.Errorf("Verify error: %v\n", err)
 	}
 
 	return nil
